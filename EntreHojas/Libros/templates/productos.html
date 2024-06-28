@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Subir archivos</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Enviar</button>
+    </form>
+
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Descripcion</th>
+                <th>Archivo</th>
+                <th>Subido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+                <tr>
+                    <td>{{ document.descripcion }}</td>
+                    <td>
+                        {{ get_media_prefix }}<br>
+                        {{ document.document.url }}
+                       <img src="{{ document.document.url }}" alt="">
+                     
+
+                    <td>
+                        {{ document.upload_at }}
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </tbody>   
+    </table>
+</body>
+</html>

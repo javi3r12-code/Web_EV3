@@ -9,22 +9,19 @@ from os import path, remove
 # Create your views here.
 
 def index(request):
-    return render(request, 'aplicacion/index.html') #Entfernen am Ende
+    return render(request, 'index.html') #Entfernen am Ende
 
 def indexp(request):
-    return render(request, 'aplicacion/indexp.html')
-
-def autores(request):
-    return render(request, 'aplicacion/autores.html')
+    return render(request, 'indexp.html')
 
 def categoria(request):
-    return render(request, 'aplication/categoria.html')
+    return render(request, 'categoria.html')
 
 def contactos(request):
-    return render(request, 'aplication/contactos.html')
+    return render(request, 'contactos.html')
 
 def administrar(request):
-    return render(request, 'aplication/administrar.html')
+    return render(request, 'administrar.html')
 
 #fin del def()
 

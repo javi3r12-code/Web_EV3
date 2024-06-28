@@ -5,8 +5,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'), #das entfernen
-    path('', views.indexp, name='indexp'),
-    path('autores', views.autores, name='autores'), #di
+    path('indexp', views.indexp, name='indexp'),
     path('categoria', views.categoria, name='categoria'),
     path('contactos', views.contactos, name='contactos'),
     path('administrar', views.administrar, name='administrar'),
