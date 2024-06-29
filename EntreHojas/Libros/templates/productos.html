@@ -1,4 +1,4 @@
-{% load static %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,21 +23,23 @@
                 <th>Descripcion</th>
                 <th>Archivo</th>
                 <th>Subido</th>
+                <th>Subido</th>
+                <th>Subido</th>
+                <th>Subido</th>
             </tr>
         </thead>
         <tbody>
-            {% for document in documents %}
+            {% for producto in productos %}
                 <tr>
-                    <td>{{ document.descripcion }}</td>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>{{ producto.precio }}</td>
                     <td>
                         {{ get_media_prefix }}<br>
-                        {{ document.document.url }}
-                       <img src="{{ document.document.url }}" alt="">
+                        {{ producto.imagen.url }}
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.imagen.url }}">
                      
-
-                    <td>
-                        {{ document.upload_at }}
-                    </td>
                 </tr>
 
             {% endfor %}

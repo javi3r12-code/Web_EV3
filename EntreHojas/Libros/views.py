@@ -29,6 +29,18 @@ def registrar(request):
 def ingresar(request):
     return render(request, 'ingresar.html')
 
+
+def subir(request):
+    if request.method=='POST':
+        form = ProductoForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('subir')
+    else:
+        form = ProductoForm()
+    productos = Producto.objects.all()   
+    return render(request,'productos.html',{ 'form':form ,'productos':productos})
+ 
 #fin del def()
 
 
