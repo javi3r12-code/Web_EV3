@@ -21,7 +21,8 @@ def contactos(request):
     return render(request, 'contactos.html')
 
 def administrar(request):
-    return render(request, 'administrar.html')
+    form = ProductoForm() 
+    return render(request,'administrar.html',{ 'form':form})
 
 def registrar(request):
     return render(request, 'registro.html')
@@ -37,9 +38,8 @@ def subir(request):
             form.save()
             return redirect('subir')
     else:
-        form = ProductoForm()
-    productos = Producto.objects.all()   
-    return render(request,'productos.html',{ 'form':form ,'productos':productos})
+        form = ProductoForm() 
+    return render(request,'administrar.html',{ 'form':form})
  
 #fin del def()
 

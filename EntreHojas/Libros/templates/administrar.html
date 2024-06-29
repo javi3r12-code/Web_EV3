@@ -83,6 +83,7 @@
         </div>
     </div>
 
+
     <div class="container" style="background-color: aliceblue; max-width: 500px;">
         <form action="" id="formulario" style="margin: 0 auto; max-width: 450px; margin: 25px;" >
             <br>
@@ -127,6 +128,15 @@
     </div>
 </div>
 
+    <!-- -->
+    <h1>Subir archivos</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Enviar</button>
+    </form>
+    <!--  -->
 
 
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="background-color: bisque;">
@@ -144,9 +154,9 @@
     </div>
   </div>
 </div>
-<script src="buscar.js"></script>
-<script src="carrito.js"></script>
-<script src="administrar.js"></script>
+<script src="{% static 'js/buscar.js' %}"></script>
+<script src="{% static 'js/carrito.js' %}"></script>
+<script src="{% static 'js/administrar.js' %}"></script>
 <footer>
    <p>integrantes Allan Romero, Rocío Rodríguez y Javier San Martín. </p>
 </footer>
