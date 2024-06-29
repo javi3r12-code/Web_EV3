@@ -93,8 +93,22 @@
 
     <div id="carouselExampleAutoplaying" class="carousel slide mt-2 " data-bs-ride="carousel">
       
-      <div id="carrusel_li" class="carousel-inner "> 
-
+      <div id="carrusel_li" class="carousel-inner ">
+        {% for producto in productos %}
+        {% if forloop.first %}
+          <div class="carousel-item active ms-5">
+        {% else %}
+          <div class="carousel-item ms5">
+        {% endif %} 
+          <div class="card" style="width: 18rem; margin: 15px;">
+              {{ get_media_prefix }}<br>
+              <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="d-block w-100 rounded position-relative" style="height: 200px;">
+              <div class="card-body">
+                <h5>{{ producto.nombre }}</h5>
+              </div>
+          </div>
+        </div>
+        {% endfor %}
       </div>
 
       <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -107,6 +121,23 @@
       </button>
     </div>
     
+    <script>
+      var items = document.querySelectorAll('.carousel .carousel-item')
+      items.forEach((e) => {
+        const slide = 4;
+        let next = e.nextElementSibling;
+        for (var i = 0;i < slide;i++){
+          if (!next){
+            next = items[0]
+          }
+          let clonechild = next.cloneNode(true)
+          e.appendChild(clonechild.children[0])
+          next = next.nextElementSibling
+        }
+      })
+
+    </script>
+
     <!--resultado busqueda-->
     <div id="BUSCADOR" style="display: none;">
       <div class="container pt-4">
@@ -130,7 +161,19 @@
     </div>
 
     <div id="datos_li" class="row" style="margin: 22px; margin-left: 22px ; margin-right: 22px;">
+      {% for producto in productos %}
+      <div class="card" style="margin: 15px; width: 250px; float: left;">
+        {{ get_media_prefix }}<br>
+        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ producto.nombre }}</h5>
+          <p class="card-text">{{ producto.descripcion }} </p>
+          <p>Precio: ${{ producto.precio }}</p>
+          <button class="btn btn-secondary">Agregar</button>
+        </div>
+      </div>
 
+      {% endfor %}
     </div>
 
 
@@ -207,7 +250,7 @@
 </footer>
 <script src="buscar.js"></script>
 <script src="libros.js"></script>
-<script src="carusel.js"></script>
+<!--<script src="carusel.js"></script>-->
 <script src="carrito.js"></script>
 <script src="pagos.js"></script>
 </body>

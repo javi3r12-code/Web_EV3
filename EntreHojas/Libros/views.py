@@ -9,10 +9,15 @@ from os import path, remove
 # Create your views here.
 
 def index(request):
-    return render(request, 'index.html') #Entfernen am Ende
+    return render(request, 'index.html') 
 
 def indexp(request):
-    return render(request, 'indexp.html')
+    productos = Producto.objects.all()  
+    context = {
+        'productos': productos, 
+    }
+
+    return render(request, 'indexp.html', context)
 
 def categoria(request):
     return render(request, 'categoria.html')
@@ -21,8 +26,14 @@ def contactos(request):
     return render(request, 'contactos.html')
 
 def administrar(request):
-    form = ProductoForm() 
-    return render(request,'administrar.html',{ 'form':form})
+    if request.method=='POST':
+        form = ProductoForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('subir')
+    else:
+        form = ProductoForm() 
+    return render(request,'administrar.html',{ 'form':form}) 
 
 def registrar(request):
     return render(request, 'registro.html')
