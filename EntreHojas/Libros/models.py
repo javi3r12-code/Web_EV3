@@ -7,5 +7,5 @@ class Producto (models.Model):
     nombre = models.CharField(max_length=100,null=False)
     descripcion = models.CharField(max_length=200,null=False)
     precio = models.IntegerField(null=False)
-    imagen = models.FileField(upload_to='productos/')
+    imagen = models.FileField(upload_to='productos/',null=True )
     

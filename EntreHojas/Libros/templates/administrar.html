@@ -82,60 +82,23 @@
           <div class="home-line"></div>
         </div>
     </div>
-
+      
 
     <div class="container" style="background-color: aliceblue; max-width: 500px;">
-        <form action="" id="formulario" style="margin: 0 auto; max-width: 450px; margin: 25px;" >
-            <br>
-            <label for="imagen" class="form-label">Ingrese imagen</label><br>
-            <input class="form-control" type="file" id="imagen">
-            <span id="s_imagen" style="display: none;">Falta la imagen del libro</span>
-            <br>
-            <label for="id" class="form-label">Ingrese el id del libro</label> <br>
-            <input class="form-control" type="number" id="id" placeholder="Id" aria-label="default input example">
-            <span id="s_id" style="display: none;">Falta el id del libro</span>
-            <br>
-            <label for="nombre" class="form-label">Ingrese nombre del libro</label> <br>
-            <input class="form-control" type="text" id="nombre" placeholder="Nombre" aria-label="default input example">
-            <span id="s_nombre" style="display: none;">Falta el nombre del libro</span>
-            <br>
-            <label for="categoria" class="form-label">Ingrese categoria del libro</label> <br>
+      <h1>Subir Libros</h1>
+      <form id="formulario" method="post" enctype="multipart/form-data" style="margin: 0 auto; max-width: 450px; margin: 25px;">
+          {% csrf_token %}
+          {{ form.as_p }}
 
-            <select id="categoria" class="form-select" aria-label="Buscar libros" placeholder="Categoria">
-              <option value="" disabled selected>Selecciona una categoría</option>
-              <option value="Ciencia Ficción">Ciencia Ficción</option>
-              <option value="Novela">Novela</option>
-              <option value="Contemporánea">Contemporánea</option>
-              <option value="Literatura Romántica">Literatura romántica</option>
-              <option value="Autoayuda">Autoayuda</option>
-              <option value="Literatura infantil">Literatura infantil</option>
-              <option value="Biografias">Biografias</option>
-              <option value="Poesia">Poesia</option>
-            </select>
-            <span id="s_cate" style="display: none;">Falta la categoria del libro</span>
-            <br>
-            <label for="desc" class="form-label">Ingrese descripcion del libro</label> <br>
-            <input class="form-control" type="text" id="desc" placeholder="Descripcion" aria-label="default input example">
-            <span id="s_desc" style="display: none;">Falta la descripcion del libro</span>
-            <br>
-            <label for="precio" class="form-label">Ingrese el precio del libro</label> <br>
-            <input class="form-control" type="number" id="precio" placeholder="Precio" aria-label="default input example">
-            <span id="s_precio" style="display: none;">Falta el precio del libro</span>
-            <br>    
-            <button type="submit" name="btn_g" id="btn_g" class="btn btn-primary" >Guardar</button>
-            <br><br>
-        </form>
+          <button type="submit" class="btn btn-primary">Enviar</button>
+      </form>
     </div>
 </div>
 
     <!-- -->
-    <h1>Subir archivos</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
+    
 
-        <button type="submit">Enviar</button>
-    </form>
+    
     <!--  -->
 
 
