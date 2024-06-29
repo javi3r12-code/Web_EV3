@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto , Carrito
+from .models import Producto 
 from .forms import ProductoForm, UpdateProductoForm
 from django.shortcuts import get_object_or_404, redirect
 from django.conf import settings
@@ -9,21 +9,24 @@ from os import path, remove
 # Create your views here.
 
 def indexp(request):
+    # Obtener el carrito de la sesión del usuario
+    carrito = request.session.get('carrito', {})
+    total = sum(item['precio'] * item['cantidad'] for item in carrito.values())
+    
+    # Obtener todos los productos para mostrar en la página
     productos = Producto.objects.all()
-    carritos = Carrito.objects.all()
-
-    # Calcular el total del carrito
-    total = sum(carrito.producto.precio * carrito.cantidad for carrito in carritos)
-
+    
     context = {
         'productos': productos,
-        'carritos': carritos,
+        'carrito': carrito,
         'total': total,
     }
 
     return render(request, 'indexp.html', context)
 
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Producto  # Asegúrate de importar el modelo Producto
 
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, idProducto=producto_id)
@@ -31,28 +34,43 @@ def agregar_al_carrito(request, producto_id):
     if request.method == 'POST':
         cantidad = int(request.POST.get('cantidad', 1))
         
+        # Obtener el carrito de la sesión del usuario
+        carrito = request.session.get('carrito', {})
+        
         # Verificar si el producto ya está en el carrito
-        carrito_existente = Carrito.objects.filter(producto=producto).first()
-        
-        if carrito_existente:
-            # Si existe, aumentar la cantidad
-            carrito_existente.cantidad = cantidad
-            carrito_existente.save()
+        if str(producto_id) in carrito:
+            # Si existe, actualizar la cantidad
+            carrito[str(producto_id)]['cantidad'] = cantidad
         else:
-            # Si no existe, crear un nuevo registro en el carrito
-            Carrito.objects.create(producto=producto, cantidad=cantidad)
+            # Si no existe, agregar el producto al carrito
+            carrito[str(producto_id)] = {
+                'idProducto': producto_id,
+                'nombre': producto.nombre,
+                'precio': float(producto.precio),
+                'cantidad': cantidad,
+                'imagen': producto.imagen.url  # Aquí agregamos la URL de la imagen del producto
+            }
         
-        # Redireccionar a la página de inicio o a donde sea necesario
+        # Actualizar la sesión del usuario con el nuevo carrito
+        request.session['carrito'] = carrito
+        messages.success(request, f"{producto.nombre} agregado al carrito")
+
         return redirect('indexp')
-    
-    # Si no es un POST, manejar según sea necesario (opcional)
-    # Aquí podrías renderizar una página de error o hacer otra acción
     
     return redirect('indexp')
 
-def eliminar_del_carrito(request, carrito_id):
-    carrito = get_object_or_404(Carrito, id=carrito_id)
-    carrito.delete()
+def eliminar_del_carrito(request, producto_id):
+    # Obtener el carrito de la sesión del usuario
+    carrito = request.session.get('carrito', {})
+
+    # Verificar si el producto está en el carrito
+    if str(producto_id) in carrito:
+        # Eliminar el producto del carrito
+        del carrito[str(producto_id)]
+        request.session['carrito'] = carrito  # Actualizar la sesión
+
+        messages.success(request, f"Producto eliminado del carrito")
+
     return redirect('indexp')
 
 
@@ -63,7 +81,6 @@ def contactos(request):
     return render(request, 'contactos.html')
 
 def administrar(request):
-    # Manejar el formulario para agregar productos
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
@@ -73,21 +90,14 @@ def administrar(request):
     else:
         form = ProductoForm()
 
-    # Obtener todos los productos y el carrito de compras
-    productos = Producto.objects.all()
-    carritos = Carrito.objects.all()
-
-    # Calcular el total del carrito
-    total = sum(carrito.producto.precio * carrito.cantidad for carrito in carritos)
-
-    context = {
+    
+    
+    contexto = {
         'form': form,
-        'productos': productos,
-        'carritos': carritos,
-        'total': total,
+         
     }
 
-    return render(request, 'administrar.html', context)
+    return render(request, 'administrar.html', contexto)
 
 def registrar(request):
     return render(request, 'registro.html')

@@ -58,20 +58,6 @@
             <a href="{% url 'ingresar' %}">  <button class="btn btn-secondary" type="button" href="{% url 'ingresar' %}">Ingresar</button>
             </a>
             </div>
-          <div>
-            
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
-                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                </svg>
-                <span id="notiCompra"  class=" oculto position-absolute top-1 start-90 translate-middle p-2 bg-danger border border-light rounded-circle">
-                  <span class="visually-hidden">Libro añadido</span>
-                </span>    
-            </button>
-
-            
-            </a>
-          </div>
         </div>
       </div>
     </nav>
@@ -92,64 +78,39 @@
 
           <button type="submit" class="btn btn-primary">Enviar</button>
       </form>
+      <h1>Carrito </h1>
+
+      <table class="table-striped " style="margin: 25px; border-style: dashed; border-block-end-style: dashed;">
+        <thead>
+            <tr>
+                <th>Cantidad</th>
+                <th>ID Producto</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for carrito in carritos %}
+                <tr>
+                    <td>{{ carrito.cantidad }}</td>
+                    <td>{{ carrito.producto.nombre }}</td>
+                    <td>{{ carrito.producto.precio }}</td>
+                </tr>
+  
+            {% endfor %}
+        </tbody>   
+    </table>
+    <br>
     </div>
 </div>
 
     <!-- -->
     
-
+    
     
     <!--  -->
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="background-color: bisque;">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Carrito de compras</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body" style="width: 400px; height: 350px; ">
-        <div id="carritoCompra">
-          <select id="selectDivisa" class="form-select">
-            <option value="clp">Pesos chilenos (CLP)</option>
-            <option value="usd">Dólares estadounidenses (USD)</option>
-            <option value="eur">Euros (EUR)</option>
-            <option value="uf">Unidad de fomento chilena (UF)</option>
-          </select>
-          
-          <!-- Mostrar elementos del carrito -->
 
-          <ul id="listaLibros">
-            {% for carrito in carritos %}
-            <li>
-                <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <img src="{{ carrito.producto.imagen.url }}" alt="{{ carrito.producto.nombre }}" style="width: 80px; height: 100px; margin-right: 10px;">
-                    <div>
-                        <span style="font-weight: bold;">{{ carrito.producto.nombre }}</span><br>
-                        <span>Precio: ${{ carrito.producto.precio }}</span><br>
-                        <form action="{% url 'agregar_al_carrito' carrito.producto.idProducto %}" method="post" style="margin-top: 5px;">
-                            {% csrf_token %}
-                            <label>Cantidad:</label>
-                            <input type="number" name="cantidad" value="{{ carrito.cantidad }}" min="1" max="10" style="width: 50px;">
-                            <button type="submit" class="btn btn-secondary">Actualizar</button>
-                        </form>
-                        <form action="{% url 'eliminar_del_carrito' carrito.id %}" method="post" style="margin-top: 5px;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-        <br>
-        <br>
-        <br>
-        <p>Total: ${{ total }}</p>
-          <button id="comprar" type="button" class="btn btn-primary" style="display: none;"> COMPRAR</button>
-          
-        </div>
-      </div>
-    </div>
 <script src="{% static 'js/buscar.js' %}"></script>
 <script src="{% static 'js/carrito.js' %}"></script>
 <footer>

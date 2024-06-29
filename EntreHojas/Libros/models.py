@@ -12,14 +12,8 @@ class Producto (models.Model):
     class Meta:      
         ordering = ['idProducto']
 
-class Carrito(models.Model):
-    id = models.AutoField(primary_key=True)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.IntegerField(default=1)
 
-    def subtotal(self):
-        return self.producto.precio * self.cantidad
+    
 
-    def __str__(self):
-        return f"{self.cantidad} x {self.producto.nombre}"
+
 
