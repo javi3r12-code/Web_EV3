@@ -102,21 +102,54 @@
     <!--  -->
 
 
-<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="background-color: bisque;">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Carrito de compras</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body" style="width: 400px; height: 350px; ">
-    <div id="carritoCompra">          
-      <ui id="listaLibros"></ui>
-      <br>
-      <span id="span_total" style="display: none;"></span>
-      <button id="comprar" type="button" class="btn btn-primary" style="display: none;"> COMPRAR</button>
-      
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" style="background-color: bisque;">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Carrito de compras</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body" style="width: 400px; height: 350px; ">
+        <div id="carritoCompra">
+          <select id="selectDivisa" class="form-select">
+            <option value="clp">Pesos chilenos (CLP)</option>
+            <option value="usd">Dólares estadounidenses (USD)</option>
+            <option value="eur">Euros (EUR)</option>
+            <option value="uf">Unidad de fomento chilena (UF)</option>
+          </select>
+          
+          <!-- Mostrar elementos del carrito -->
+
+          <ul id="listaLibros">
+            {% for carrito in carritos %}
+            <li>
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <img src="{{ carrito.producto.imagen.url }}" alt="{{ carrito.producto.nombre }}" style="width: 80px; height: 100px; margin-right: 10px;">
+                    <div>
+                        <span style="font-weight: bold;">{{ carrito.producto.nombre }}</span><br>
+                        <span>Precio: ${{ carrito.producto.precio }}</span><br>
+                        <form action="{% url 'agregar_al_carrito' carrito.producto.idProducto %}" method="post" style="margin-top: 5px;">
+                            {% csrf_token %}
+                            <label>Cantidad:</label>
+                            <input type="number" name="cantidad" value="{{ carrito.cantidad }}" min="1" max="10" style="width: 50px;">
+                            <button type="submit" class="btn btn-secondary">Actualizar</button>
+                        </form>
+                        <form action="{% url 'eliminar_del_carrito' carrito.id %}" method="post" style="margin-top: 5px;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <br>
+        <br>
+        <p>Total: ${{ total }}</p>
+          <button id="comprar" type="button" class="btn btn-primary" style="display: none;"> COMPRAR</button>
+          
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 <script src="{% static 'js/buscar.js' %}"></script>
 <script src="{% static 'js/carrito.js' %}"></script>
 <footer>

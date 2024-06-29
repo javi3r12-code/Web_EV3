@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .models import Producto
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Producto , Carrito
 from .forms import ProductoForm, UpdateProductoForm
 from django.shortcuts import get_object_or_404, redirect
 from django.conf import settings
@@ -8,16 +8,53 @@ from os import path, remove
 
 # Create your views here.
 
-def index(request):
-    return render(request, 'index.html') 
-
 def indexp(request):
-    productos = Producto.objects.all()  
+    productos = Producto.objects.all()
+    carritos = Carrito.objects.all()
+
+    # Calcular el total del carrito
+    total = sum(carrito.producto.precio * carrito.cantidad for carrito in carritos)
+
     context = {
-        'productos': productos, 
+        'productos': productos,
+        'carritos': carritos,
+        'total': total,
     }
 
     return render(request, 'indexp.html', context)
+
+
+
+def agregar_al_carrito(request, producto_id):
+    producto = get_object_or_404(Producto, idProducto=producto_id)
+    
+    if request.method == 'POST':
+        cantidad = int(request.POST.get('cantidad', 1))
+        
+        # Verificar si el producto ya está en el carrito
+        carrito_existente = Carrito.objects.filter(producto=producto).first()
+        
+        if carrito_existente:
+            # Si existe, aumentar la cantidad
+            carrito_existente.cantidad = cantidad
+            carrito_existente.save()
+        else:
+            # Si no existe, crear un nuevo registro en el carrito
+            Carrito.objects.create(producto=producto, cantidad=cantidad)
+        
+        # Redireccionar a la página de inicio o a donde sea necesario
+        return redirect('indexp')
+    
+    # Si no es un POST, manejar según sea necesario (opcional)
+    # Aquí podrías renderizar una página de error o hacer otra acción
+    
+    return redirect('indexp')
+
+def eliminar_del_carrito(request, carrito_id):
+    carrito = get_object_or_404(Carrito, id=carrito_id)
+    carrito.delete()
+    return redirect('indexp')
+
 
 def categoria(request):
     return render(request, 'categoria.html')
@@ -26,14 +63,31 @@ def contactos(request):
     return render(request, 'contactos.html')
 
 def administrar(request):
-    if request.method=='POST':
-        form = ProductoForm(request.POST,request.FILES)
+    # Manejar el formulario para agregar productos
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('subir')
+            messages.success(request, 'Producto agregado exitosamente')
+            return redirect('administrar')
     else:
-        form = ProductoForm() 
-    return render(request,'administrar.html',{ 'form':form}) 
+        form = ProductoForm()
+
+    # Obtener todos los productos y el carrito de compras
+    productos = Producto.objects.all()
+    carritos = Carrito.objects.all()
+
+    # Calcular el total del carrito
+    total = sum(carrito.producto.precio * carrito.cantidad for carrito in carritos)
+
+    context = {
+        'form': form,
+        'productos': productos,
+        'carritos': carritos,
+        'total': total,
+    }
+
+    return render(request, 'administrar.html', context)
 
 def registrar(request):
     return render(request, 'registro.html')

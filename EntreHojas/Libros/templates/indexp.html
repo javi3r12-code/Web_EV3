@@ -169,7 +169,11 @@
           <h5 class="card-title">{{ producto.nombre }}</h5>
           <p class="card-text">{{ producto.descripcion }} </p>
           <p>Precio: ${{ producto.precio }}</p>
-          <button class="btn btn-secondary">Agregar</button>
+          <form action="{% url 'agregar_al_carrito' producto.idProducto %}" method="post">
+            {% csrf_token %}
+            <input type="number" name="cantidad" value="1" min="1" max="10">
+            <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
         </div>
       </div>
 
@@ -196,10 +200,34 @@
             <option value="eur">Euros (EUR)</option>
             <option value="uf">Unidad de fomento chilena (UF)</option>
           </select>
-                   
-          <ui id="listaLibros"></ui>
+          
+          <!-- Mostrar elementos del carrito -->
+          <ui id="listaLibros">
+              {% for carrito in carritos %}
+                  <li>
+                    <div style="display: flex;">
+                      <img src="{{ carrito.producto.imagen.url }}" alt="{{ carrito.producto.nombre }}" style="width: 80px; height: 100px;">
+                      <span style="margin: 10px;">{{ carrito.producto.nombre }}</span>
+                      
+                          <p style="width: 80px;">Precio: ${{ carrito.producto.precio }} </p>
+                          <form action="{% url 'agregar_al_carrito' carrito.producto.idProducto %}" method="post">
+                              {% csrf_token %}
+                              <input type="number" name="cantidad" value="{{ carrito.cantidad }}" min="1" max="10" style="width: 88px; height: 50px;">
+                              <button type="submit" class="btn btn-secondary" style="height: 45px; float: inline-end;">Actualizar</button>
+                          </form>
+                          <form action="{% url 'eliminar_del_carrito' carrito.id %}" method="post">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-secondary" style="height: 45px; float: inline-end;" >Eliminar</button>
+                          </form>
+                      
+                    </div>
+                  </li>
+              {% endfor %}
+          </ui>
           <br>
-          <span id="span_total" style="display: none;"></span>
+          <br>
+          <br>
+          <p>Total: ${{ total }}</p>
           <button id="comprar" type="button" class="btn btn-primary" style="display: none;"> COMPRAR</button>
           
         </div>
