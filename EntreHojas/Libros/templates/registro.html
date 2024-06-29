@@ -1,3 +1,4 @@
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,8 +22,8 @@
   <!--menu-->
   <nav class="navbar navbar-expand-md " style="background-color: #D9A84E;">
     <div class="container-fluid">
-      <a class="navbar-brand" href="inicio seccion.html">
-        <img src="img/Entre Hojas.jpg" alt="logo" width="80px" height="60px" class="classd-inline-block align-text-top">
+      <a class="navbar-brand" href="{% url 'indexp' %}">
+        <img src="{% static 'images/Entre_Hojas.jpg' %}" alt="logo" width="80px" height="60px" class="classd-inline-block align-text-top">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -30,16 +31,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto me-4 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="inicio seccion.html">Inicio</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'indexp' %}">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="autores.html">Autor</a>
+            <a class="nav-link" href="{% url 'categoria' %}">Categoría</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="categoria.html">Categoría</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="contactos.html">Contáctanos</a>
+            <a class="nav-link active" href="{% url 'contactos' %}">Contáctanos</a>
           </li>
           
         </ul>
@@ -52,12 +50,12 @@
           </svg></button>
 
         </form>
-        <div class="d-grid gap-2 d-md-block" style="margin-left: 5px; margin-right: 5px;">
-          <a><button class="btn btn-primary" type="button">Registrarse</button>
+        <div class="d-grid gap-2 d-md-block">
+          <a href="{% url 'registrar' %}">  <button class="btn btn-primary" type="button" href="{% url 'registrar' %}">Registrarse</button>
           </a>
-          <a href="ingresar.html"><button class="btn btn-secondary" type="button">Ingresar</button>
+          <a href="{% url 'ingresar' %}">  <button class="btn btn-secondary" type="button" href="{% url 'ingresar' %}">Ingresar</button>
           </a>
-        </div>
+          </div>
         <div>
           
           

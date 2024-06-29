@@ -1,0 +1,89 @@
+.carrusel {
+    position: relative;
+    max-width: 600px;
+    margin: 15px;
+  }
+  
+.carrusel-inner{
+    border: 10px;
+    display: flex;
+    position: relative;
+    margin-right: 10px;
+    border: 10px;
+    width: 100%;
+    max-width: 600px;
+  }
+
+.carrusel-item{
+    margin-right: 10px;
+    border: 10px;
+    position: relative;
+    width: 100%;
+    max-width: 99%;
+
+}
+
+.img {
+    width: 90%;
+    height: 150px;
+    transition: transform 0.5s ease;
+    margin: 15px;
+    flex-shrink: 0;
+    
+}
+  
+.anterior, .siguiente {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1;
+}
+  
+.anterior {
+    left: 0;
+}
+  
+.siguiente {
+    right: 0;
+}
+
+.overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    color: rgb(183, 153, 153);
+    padding: 20px;
+    text-align: center;
+}
+
+.card{
+    height: 380px;
+    margin: 10px;
+}
+
+.categoria-libro {
+    display: flex;
+}
+
+.cardL, .datos_li{
+    width: 250px;
+    float:left;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 25px 0;
+    margin: 0;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+}

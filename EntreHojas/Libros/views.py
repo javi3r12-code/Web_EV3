@@ -23,6 +23,12 @@ def contactos(request):
 def administrar(request):
     return render(request, 'administrar.html')
 
+def registrar(request):
+    return render(request, 'registro.html')
+
+def ingresar(request):
+    return render(request, 'ingresar.html')
+
 #fin del def()
 
 
