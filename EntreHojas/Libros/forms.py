@@ -4,6 +4,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 class ProductoForm(forms.ModelForm):
     
@@ -46,3 +48,18 @@ class LoginForm(AuthenticationForm):
                                widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'}))
     password = forms.CharField(label="Contraseña", max_length=30,
                                widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))    
+
+class ContactForm(forms.Form):
+    name = forms.CharField(label='Nombre', max_length=100)
+    destinatarios = forms.CharField(label='Correo', max_length=200)
+    razon = forms.CharField(label='Razón', widget=forms.Textarea)
+
+    def clean_destinatarios(self):
+        destinatario = self.cleaned_data.get('destinatarios', '')
+
+        try:
+            validate_email(destinatario)
+        except ValidationError:
+            raise ValidationError('Por favor, introduce una dirección de correo electrónico válida.')
+
+        return destinatario

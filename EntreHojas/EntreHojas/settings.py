@@ -129,3 +129,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+
+# CONFIGURACION DEL CORREO ELECTRONICO
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER='entrelibroscontacto@gmail.com'
+EMAIL_HOST_PASSWORD='gkvz qmoa onpt lqrt'
+EMAIL_USE_TLS = True

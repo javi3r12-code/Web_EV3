@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, Compra, ProductoCompra
-from .forms import ProductoForm, UpdateProductoForm, UserForm, LoginForm
+from .forms import ProductoForm, UpdateProductoForm, UserForm, LoginForm, ContactForm
 from django.shortcuts import get_object_or_404, redirect
 from django.conf import settings
 from django.contrib import messages
 from os import path, remove
 from django.contrib.auth import authenticate, login, logout
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 # Create your views here.
 
@@ -128,7 +130,9 @@ def categoria(request):
     return render(request, 'categoria.html')
 
 def contactos(request):
-    return render(request, 'contactos.html')
+    form = ContactForm
+    context= {'form':form }
+    return render(request, 'contactos.html', context)
 
 def detalle_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id)
@@ -234,3 +238,49 @@ def eliminarprod(request, id):
     
     return render(request, 'aplicacion/eliminarprod.html', datos)
     
+def contact(request):
+    form = ContactForm(request.POST or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            destinatarios = form.cleaned_data.get('destinatarios', '')
+            name = form.cleaned_data['name']
+            subject = 'Solicitud de Contacto'
+            razon = form.cleaned_data['razon']
+
+            mensaje = f'Su solicitud de contacto por el motivo de: {razon} \n Ha sido recibida. Nos pondremos en contacto con usted lo antes posible.'
+
+            # Separar los correos electrónicos por comas y eliminar espacios en blanco
+            recipient_list = [email.strip() for email in destinatarios.split(',')]
+
+            # Renderizar el template de correo electrónico con los datos del formulario
+            template = render_to_string('email-template.html', {
+                'name': name,
+                'email': destinatarios,
+                'subject': subject,
+                'message': mensaje
+            })
+
+            # Crear el objeto EmailMessage
+            email_sender = EmailMessage(
+                subject,
+                template,
+                settings.EMAIL_HOST_USER,
+                recipient_list,
+            )
+            email_sender.content_subtype = 'html'
+
+            try:
+                # Enviar el correo electrónico
+                email_sender.send()
+                messages.success(request, 'El correo electrónico se envió correctamente')
+            except Exception as e:
+                messages.error(request, f'Hubo un error al enviar el correo electrónico: {e}')
+
+            return redirect('indexp')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'contactos.html', context)
