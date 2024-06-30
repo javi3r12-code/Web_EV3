@@ -68,28 +68,18 @@
 
   <div class="container">
     <h2>POR FAVOR, REGÍSTRESE</h2>
-    <form id="formulario" name="registro">
-        <label for="Nombre">Ingrese su nombre</label>
-        <input type="text" name="nombre" id="nombre"
-         placeholder="Eje.: Juan">
+    <form id="formulario" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button id="btnRegistro" class="btn btn-primary" type="submit">Registro</button>
+    </form>
+  </div>
 
-         <label for="apellidos">Ingrese sus apellidos</label>
-         <input type="text" name="Apellidos" id="Apellidos"
-          placeholder="Eje.: Pérez">
+  <!-- Footer -->
 
-          <label for="email">Ingrese su E-mail</label>
-          <input type="text" name="email" id="email"
-           placeholder="Eje.: juan@hotmail.com">
 
-            <button id="btnRegistro" type="submit" id="registro">Registro</button>
-        
-        </form>
-
-</div>
-<footer>
-  <p>integrantes Allan Romero, Rocío Rodríguez y Javier San Martín. </p>
-</footer>
 </body>
+
 <script>
 $(document).ready(function(){
     $("#formulario").validate({

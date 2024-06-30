@@ -13,7 +13,7 @@ urlpatterns = [
     path('subir/',views.subir,name='subir'),
     path('agregar_al_carrito/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),
     path('eliminar_del_carrito/<int:producto_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
-
+    path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),
 
 
 ]

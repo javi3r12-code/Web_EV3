@@ -1,12 +1,48 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto 
-from .forms import ProductoForm, UpdateProductoForm
+from .forms import ProductoForm, UpdateProductoForm, UserForm, LoginForm
 from django.shortcuts import get_object_or_404, redirect
 from django.conf import settings
 from django.contrib import messages
 from os import path, remove
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
+
+
+
+def registrar(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Redirigir a alguna página de éxito o hacer alguna otra acción
+            return redirect('registrar')
+    else:
+        form = UserForm()
+    return render(request, 'registro.html', {'form': form})
+
+def ingresar(request):
+    if request.method == 'POST':
+        form = LoginForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('indexp')  # Redirigir a la página principal después de iniciar sesión
+            else:
+                form.add_error(None, "Nombre de usuario o contraseña incorrectos.")
+    else:
+        form = LoginForm()
+    return render(request, 'ingresar.html', {'form': form})
+
+def cerrar_sesion(request):
+    logout(request)
+    messages.success(request, 'Has cerrado sesión correctamente.')
+    return redirect('indexp')  # Redirige a la página de inicio u otra página deseada después de cerrar sesión
+
 
 def indexp(request):
     # Obtener el carrito de la sesión del usuario
@@ -98,13 +134,6 @@ def administrar(request):
     }
 
     return render(request, 'administrar.html', contexto)
-
-def registrar(request):
-    return render(request, 'registro.html')
-
-def ingresar(request):
-    return render(request, 'ingresar.html')
-
 
 def subir(request):
     if request.method=='POST':
