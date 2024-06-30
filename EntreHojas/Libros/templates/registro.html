@@ -50,13 +50,25 @@
           </svg></button>
 
         </form>
-        <div class="d-grid gap-2 d-md-block">
-          <a href="{% url 'registrar' %}">  <button class="btn btn-primary" type="button" href="{% url 'registrar' %}">Registrarse</button>
-          </a>
-          <a href="{% url 'ingresar' %}">  <button class="btn btn-secondary" type="button" href="{% url 'ingresar' %}">Ingresar</button>
-          </a>
-          </div>
-        <div>
+        {% if user.is_authenticated %}
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+    {{ user.username }}
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <li><a class="dropdown-item" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+  </ul>
+</div>
+{% else %}
+<div class="d-grid gap-2 d-md-block">
+  <a href="{% url 'registrar' %}">
+    <button class="btn btn-primary" type="button">Registrarse</button>
+  </a>
+  <a href="{% url 'ingresar' %}">
+    <button class="btn btn-secondary" type="button">Ingresar</button>
+  </a>
+</div>
+{% endif %}
           
           
           

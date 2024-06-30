@@ -41,9 +41,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'contactos' %}">Contáctanos</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'administrar' %}">Administrar</a>
-            </li>
+            {% if user.is_authenticated and user.is_staff %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'administrar' %}">Administrar</a>
+              </li>
+          {% endif %}
             
           </ul>
           <form class="d-flex" role="search">
@@ -241,8 +243,14 @@
             </li>
             {% endfor %}
           </ul>
-          <p>Total: ${{ total }}</p>
-          <button id="comprar" type="button" class="btn btn-primary" style="display: none;"> COMPRAR</button>
+          <p>Total: ${{ total }}</p><!-- indexp.html u otro template donde tengas el carrito y el botón de compra -->
+          <form action="{% url 'registrar_compra' %}" method="post">
+              {% csrf_token %}
+              <!-- Otros elementos de tu carrito aquí -->
+          
+              <button type="submit" class="btn btn-primary">Finalizar Compra</button>
+          </form>
+          
           
         </div>
       </div>

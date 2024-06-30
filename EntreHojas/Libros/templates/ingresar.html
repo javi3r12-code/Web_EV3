@@ -44,17 +44,31 @@
               BUSCAR<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
               <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
             </svg></button>
+          </form>
 
       
-            <div class="d-grid gap-2 d-md-block">
-              <a href="{% url 'registrar' %}">  <button class="btn btn-primary" type="button" href="{% url 'registrar' %}">Registrarse</button>
-              </a>
-              <a href="{% url 'ingresar' %}">  <button class="btn btn-secondary" type="button" href="{% url 'ingresar' %}">Ingresar</button>
-              </a>
-              </div>
+            {% if user.is_authenticated %}
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+    {{ user.username }}
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <li><a class="dropdown-item" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+  </ul>
+</div>
+{% else %}
+<div class="d-grid gap-2 d-md-block">
+  <a href="{% url 'registrar' %}">
+    <button class="btn btn-primary" type="button">Registrarse</button>
+  </a>
+  <a href="{% url 'ingresar' %}">
+    <button class="btn btn-secondary" type="button">Ingresar</button>
+  </a>
+</div>
+{% endif %}
 
             
-          </form>
+          
         </div>
       </div>
     </nav>

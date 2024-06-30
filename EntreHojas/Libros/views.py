@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto 
+from .models import Producto, Compra, ProductoCompra
 from .forms import ProductoForm, UpdateProductoForm, UserForm, LoginForm
 from django.shortcuts import get_object_or_404, redirect
 from django.conf import settings
@@ -60,9 +60,7 @@ def indexp(request):
 
     return render(request, 'indexp.html', context)
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import Producto  # Asegúrate de importar el modelo Producto
+
 
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, idProducto=producto_id)
@@ -70,24 +68,19 @@ def agregar_al_carrito(request, producto_id):
     if request.method == 'POST':
         cantidad = int(request.POST.get('cantidad', 1))
         
-        # Obtener el carrito de la sesión del usuario
         carrito = request.session.get('carrito', {})
         
-        # Verificar si el producto ya está en el carrito
         if str(producto_id) in carrito:
-            # Si existe, actualizar la cantidad
             carrito[str(producto_id)]['cantidad'] = cantidad
         else:
-            # Si no existe, agregar el producto al carrito
             carrito[str(producto_id)] = {
                 'idProducto': producto_id,
                 'nombre': producto.nombre,
                 'precio': float(producto.precio),
                 'cantidad': cantidad,
-                'imagen': producto.imagen.url  # Aquí agregamos la URL de la imagen del producto
+                'imagen': producto.imagen.url  
             }
         
-        # Actualizar la sesión del usuario con el nuevo carrito
         request.session['carrito'] = carrito
         messages.success(request, f"{producto.nombre} agregado al carrito")
 
@@ -96,19 +89,40 @@ def agregar_al_carrito(request, producto_id):
     return redirect('indexp')
 
 def eliminar_del_carrito(request, producto_id):
-    # Obtener el carrito de la sesión del usuario
     carrito = request.session.get('carrito', {})
 
-    # Verificar si el producto está en el carrito
     if str(producto_id) in carrito:
-        # Eliminar el producto del carrito
         del carrito[str(producto_id)]
-        request.session['carrito'] = carrito  # Actualizar la sesión
+        request.session['carrito'] = carrito  
 
         messages.success(request, f"Producto eliminado del carrito")
 
     return redirect('indexp')
 
+
+def registrar_compra(request):
+    carrito = request.session.get('carrito', {})
+    usuario = request.user
+
+    total_compra = sum(item['precio'] * item['cantidad'] for item in carrito.values())
+
+    nueva_compra = Compra.objects.create(usuario=usuario, total=total_compra)
+
+    for item_id, item_info in carrito.items():
+        producto_id = item_info['idProducto']
+        cantidad = item_info['cantidad']
+        precio_unitario = item_info['precio']
+
+        producto = get_object_or_404(Producto, idProducto=producto_id)
+
+        producto_compra = ProductoCompra(compra=nueva_compra, producto=producto, cantidad=cantidad, precio_unitario=precio_unitario)
+        producto_compra.save()
+
+
+    request.session['carrito'] = {}
+
+    messages.success(request, 'Compra realizada con éxito')
+    return redirect('indexp')
 
 def categoria(request):
     return render(request, 'categoria.html')
@@ -126,10 +140,13 @@ def administrar(request):
     else:
         form = ProductoForm()
 
-    
-    
+    productos = Producto.objects.all()
+    compras = Compra.objects.all()
     contexto = {
         'form': form,
+        'productos': productos,
+        'compras':compras,
+        
          
     }
 
