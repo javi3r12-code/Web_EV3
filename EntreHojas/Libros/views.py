@@ -130,6 +130,17 @@ def categoria(request):
 def contactos(request):
     return render(request, 'contactos.html')
 
+def detalle_compra(request, compra_id):
+    compra = get_object_or_404(Compra, id=compra_id)
+    productos_compra = ProductoCompra.objects.filter(compra=compra)
+
+    contexto = {
+        'compra': compra,
+        'productos_compra': productos_compra,
+    }
+
+    return render(request, 'detalle_compra.html', contexto)
+
 def administrar(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST, request.FILES)
