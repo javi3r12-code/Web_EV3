@@ -16,7 +16,6 @@
     crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
 
-
   </head>
 <body class="cuerpo" >
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -48,15 +47,10 @@
           {% endif %}
             
           </ul>
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" id="in_buscar" type="text" list="sugerenciasList" placeholder="Buscar libros" aria-label="Search">
-            <datalist id="sugerenciasList"></datalist>
-            <button id="btn_buscar" class="btn btn-outline-success" type="button" onclick="mostrarResultado((in_buscar).value)">
-              BUSCAR<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-            </svg></button>
-
-          </form>
+          <form method="GET" action="{% url 'indexp' %}">
+            <input type="text" id="buscarLibro" name="buscar" placeholder="Buscar libro..." value="{{ buscar }}">
+            <button type="submit">Buscar</button>
+        </form>
           <!-- En la sección de navbar o donde prefieras -->
 {% if user.is_authenticated %}
 <div class="dropdown">
@@ -155,18 +149,31 @@
     </script>
 
     <!--resultado busqueda-->
-    <div id="BUSCADOR" style="display: none;">
-      <div class="container pt-4">
-        <div >
-          <span style="font-size: 200%; font-family: Monserrat; color: darkblue;" >Resultado De La Busqueda</span>
-          <div class="home-line"></div>
-        </div>
-      </div>
 
-      <div id="datos_re" class="row" style="margin: 22px; margin-left: 22px ; margin-right: 22px;">
-
+  
+  <div id="datos_re" class="row" style="margin: 22px; margin-left: 22px; margin-right: 22px;">
+    {% if buscar %}
+        <h3>Resultados para: <strong>{{ buscar }}</strong></h3>
+    {% endif %}
+    {% for producto in resultados %}
+    <div class="card" style="margin: 15px; width: 250px; float: left;">
+      {{ get_media_prefix }}<br>
+      <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+      <div class="card-body">
+        <h5 class="card-title">{{ producto.nombre }}</h5>
+        <p class="card-text">{{ producto.descripcion }} </p>
+        <p>Precio: ${{ producto.precio }}</p>
+        <form action="{% url 'agregar_al_carrito' producto.idProducto %}" method="post">
+          {% csrf_token %}
+          <input type="number" name="cantidad" value="1" min="1" max="10">
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </form>
       </div>
     </div>
+    {% empty %}
+        <p>No se encontraron productos.</p>
+    {% endfor %}
+</div>
     
     <!--cards de libros-->
     <div class="container pt-4">
@@ -243,10 +250,10 @@
             </li>
             {% endfor %}
           </ul>
-          <p>Total: ${{ total }}</p><!-- indexp.html u otro template donde tengas el carrito y el botón de compra -->
+          <p>Total: ${{ total }}</p>
           <form action="{% url 'registrar_compra' %}" method="post">
               {% csrf_token %}
-              <!-- Otros elementos de tu carrito aquí -->
+              
           
               <button type="submit" class="btn btn-primary">Realizar Compra</button>
           </form>
@@ -282,10 +289,11 @@
 <footer>
    <p>integrantes: Rocío Rodríguez y Javier San Martín. </p>
 </footer>
-<script src="buscar.js"></script>
-<script src="libros.js"></script>
+<!--<script src="buscar.js"></script>-->
+<!--<script src="libros.js"></script>-->
 <!--<script src="carusel.js"></script>-->
-<script src="carrito.js"></script>
-<script src="pagos.js"></script>
+<!--<script src="carrito.js"></script>-->
+<!--<script src="pagos.js"></script>-->
 </body>
+
 </html>

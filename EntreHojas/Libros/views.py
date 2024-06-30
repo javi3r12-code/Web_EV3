@@ -8,6 +8,9 @@ from os import path, remove
 from django.contrib.auth import authenticate, login, logout
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.urls import reverse
+from django.db.models import Q
 
 # Create your views here.
 
@@ -47,22 +50,36 @@ def cerrar_sesion(request):
 
 
 def indexp(request):
-    # Obtener el carrito de la sesión del usuario
-    carrito = request.session.get('carrito', {})
-    total = sum(item['precio'] * item['cantidad'] for item in carrito.values())
-    
-    # Obtener todos los productos para mostrar en la página
-    productos = Producto.objects.all()
-    
-    context = {
-        'productos': productos,
-        'carrito': carrito,
-        'total': total,
-    }
+    try:
+        # Obtener el carrito de la sesión del usuario
+        carrito = request.session.get('carrito', {})
+        total = sum(item['precio'] * item['cantidad'] for item in carrito.values())
 
-    return render(request, 'indexp.html', context)
+        # Obtener todos los productos
+        productos = Producto.objects.all()
 
+        # Obtener el término de búsqueda si está presente en la solicitud GET
+        buscar = request.GET.get('buscar')
+        resultados = None  # Definir resultados inicialmente como None
 
+        if buscar:
+            resultados = productos.filter(
+                Q(nombre__icontains=buscar) |  # Filtrar por nombre que contenga el término de búsqueda
+                Q(descripcion__icontains=buscar)  # Filtrar por descripción que contenga el término de búsqueda
+            )
+
+        context = {
+            'productos': productos,
+            'carrito': carrito,
+            'total': total,
+            'buscar': buscar,  # Pasar el término de búsqueda al contexto
+            'resultados': resultados  # Pasar resultados al contexto
+        }
+        
+        return render(request, 'indexp.html', context)
+    except Exception as e:
+        # Manejar otras excepciones si es necesario
+        return HttpResponse(f"Error: {str(e)}")
 
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, idProducto=producto_id)
@@ -284,3 +301,4 @@ def contact(request):
     }
 
     return render(request, 'contactos.html', context)
+
