@@ -73,8 +73,8 @@
       </div>
     </nav>
 
-    <div class="container">
-      <h2>Iniciar sesión</h2>
+    <div class="container" style="width: 450px;">
+      <h2>Iniciar sesión (administrador= usuario: admin contraseña: admin)</h2>
       <form method="post">
           {% csrf_token %}
           {{ form.as_p }}

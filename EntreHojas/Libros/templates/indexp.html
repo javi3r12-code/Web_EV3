@@ -47,16 +47,17 @@
           {% endif %}
             
           </ul>
-          <form method="GET" action="{% url 'indexp' %}">
-            <input type="text" id="buscarLibro" name="buscar" placeholder="Buscar libro..." value="{{ buscar }}">
-            <button type="submit">Buscar</button>
-        </form>
+        <form method="GET" action="{% url 'indexp' %}" style="margin-right: 20px;">
+            <input class="form-control" type="text" id="buscarLibro" name="buscar" placeholder="Buscar libro..." value="{{ buscar }}">
+            <button class="btn btn-success" type="submit">Buscar</button>
+        </form>  
           <!-- En la sección de navbar o donde prefieras -->
 {% if user.is_authenticated %}
 <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
     {{ user.username }}
   </button>
+  
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <li><a class="dropdown-item" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
   </ul>
@@ -66,6 +67,7 @@
   <a href="{% url 'registrar' %}">
     <button class="btn btn-primary" type="button">Registrarse</button>
   </a>
+
   <a href="{% url 'ingresar' %}">
     <button class="btn btn-secondary" type="button">Ingresar</button>
   </a>
@@ -73,7 +75,7 @@
 {% endif %}
 
             
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="margin-left: 15px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
                 <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
                 </svg>
