@@ -143,9 +143,6 @@ def registrar_compra(request):
     messages.success(request, 'Compra realizada con éxito')
     return redirect('indexp')
 
-def categoria(request):
-    return render(request, 'categoria.html')
-
 def contactos(request):
     form = ContactForm
     context= {'form':form }
