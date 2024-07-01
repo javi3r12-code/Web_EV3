@@ -45,7 +45,7 @@
             
           </ul>
         <form method="GET" action="{% url 'indexp' %}" style="margin-right: 20px;">
-            <input class="form-control" type="text" id="buscarLibro" name="buscar" placeholder="Buscar libro..." value="{{ buscar }}">
+            <input class="form-control" type="text" id="buscarLibro" name="buscar" placeholder="Buscar libro..." >
             <button class="btn btn-success" type="submit">Buscar</button>
         </form>  
           <!-- En la sección de navbar o donde prefieras -->
@@ -86,10 +86,13 @@
           </div>
         </div>
       </div>
-    </nav>
-
-    <ul id="sugerencias"></ul>
-
+    </nav> 
+    
+    <p style="text-align: center;">
+      <span style="display: inline-block; background-color: #f0f0f0; padding: 10px;">
+          logiarse (ingresar) como admin para ver vista (administrador)
+      </span>
+  </p>
     <!--CARRUSEL-->
 
     <div class="container pt-4">
