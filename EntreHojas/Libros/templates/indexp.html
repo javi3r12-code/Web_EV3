@@ -217,53 +217,64 @@
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">Carrito de compras</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
-      <div class="offcanvas-body" style="width: 400px; height: 350px; ">
+      <div class="offcanvas-body" style="width: 400px; height: 350px;">
         <div id="carritoCompra">
-          <select id="selectDivisa" class="form-select">
-            <option value="clp">Pesos chilenos (CLP)</option>
-            <option value="usd">Dólares estadounidenses (USD)</option>
-            <option value="eur">Euros (EUR)</option>
-            <option value="uf">Unidad de fomento chilena (UF)</option>
-          </select>
-          
+          <form method="get">
+            <select name="selectDivisa" class="form-select" onchange="this.form.submit()">
+              <option value="clp" {% if request.GET.selectDivisa == 'clp' %}selected{% endif %}>Pesos chilenos (CLP)</option>
+              <option value="usd" {% if request.GET.selectDivisa == 'usd' %}selected{% endif %}>Dólares estadounidenses (USD)</option>
+              <option value="eur" {% if request.GET.selectDivisa == 'eur' %}selected{% endif %}>Euros (EUR)</option>
+              <option value="uf" {% if request.GET.selectDivisa == 'uf' %}selected{% endif %}>Unidad de fomento chilena (UF)</option>
+            </select>
+          </form>
+    
           <!-- Mostrar elementos del carrito -->
           <ul>
             {% for key, item in carrito.items %}
             <li>
-                <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    {{ get_media_prefix }}<br>
-                    <img src="{{ item.imagen }}" alt="{{ item.nombre }}" style="width: 80px; height: 100px; margin-right: 10px;">
-                    <div>
-                        <span>{{ item.nombre }}</span><br>
-                        <span>Precio: ${{ item.precio }}</span><br>
-                        <form action="{% url 'agregar_al_carrito' item.idProducto %}" method="post">
-                            {% csrf_token %}
-                            <label>Cantidad:</label>
-                            <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" max="10" style="width: 50px;">
-                            <button type="submit">Actualizar</button>
-                        </form>
-                        <form action="{% url 'eliminar_del_carrito' item.idProducto %}" method="post">
-                          {% csrf_token %}
-                          <button type="submit">Eliminar</button>
-                      </form>
-                      
-                    </div>
+              <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                {{ get_media_prefix }}<br>
+                <img src="{{ item.imagen }}" alt="{{ item.nombre }}" style="width: 80px; height: 100px; margin-right: 10px;">
+                <div>
+                  <span>{{ item.nombre }}</span><br>
+                  <span>Precio: ${{ item.precio }}</span><br>
+                  <form action="{% url 'agregar_al_carrito' item.idProducto %}" method="post">
+                    {% csrf_token %}
+                    <label for="cantidad">Cantidad:</label>
+                    <input id="cantidad" type="number" name="cantidad" value="{{ item.cantidad }}" min="1" max="10" style="width: 50px;">
+                    <button type="submit">Actualizar</button>
+                  </form>
+                  <form action="{% url 'eliminar_del_carrito' item.idProducto %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Eliminar</button>
+                  </form>
                 </div>
+              </div>
             </li>
             {% endfor %}
           </ul>
-          <p>Total: ${{ total }}</p>
+    
+          <!-- Mostrar el total en la divisa seleccionada -->
+          <p id="totalPrecio">
+            {% if request.GET.selectDivisa == 'clp' %}
+              Total: ${{ total_clp|floatformat:"2" }}
+            {% elif request.GET.selectDivisa == 'usd' %}
+              Total: ${{ total_usd|floatformat:"2" }}
+            {% elif request.GET.selectDivisa == 'eur' %}
+              Total: €{{ total_eur|floatformat:"2" }}
+            {% elif request.GET.selectDivisa == 'uf' %}
+              Total: {{ total_uf|floatformat:"2" }} UF
+            {% endif %}
+          </p>
+    
           <form action="{% url 'registrar_compra' %}" method="post">
-              {% csrf_token %}
-              
-          
-              <button type="submit" class="btn btn-primary">Realizar Compra</button>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Realizar Compra</button>
           </form>
-          
-          
         </div>
       </div>
     </div>
+    
 
 
     <script>
@@ -296,6 +307,7 @@
 <!--<script src="carusel.js"></script>-->
 <!--<script src="carrito.js"></script>-->
 <!--<script src="pagos.js"></script>-->
-</body>
 
+
+</body>
 </html>

@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.urls import reverse
 from django.db.models import Q
-
+import requests
 # Create your views here.
 
 
@@ -49,11 +49,19 @@ def cerrar_sesion(request):
     return redirect('indexp')  # Redirige a la página de inicio u otra página deseada después de cerrar sesión
 
 
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.db.models import Q
+import requests
+from .models import Producto
+
 def indexp(request):
     try:
         # Obtener el carrito de la sesión del usuario
         carrito = request.session.get('carrito', {})
-        total = sum(item['precio'] * item['cantidad'] for item in carrito.values())
+        
+        # Calcular el total del carrito en CLP
+        total_clp = sum(item['precio'] * item['cantidad'] for item in carrito.values())
 
         # Obtener todos los productos
         productos = Producto.objects.all()
@@ -68,18 +76,45 @@ def indexp(request):
                 Q(descripcion__icontains=buscar)  # Filtrar por descripción que contenga el término de búsqueda
             )
 
-        context = {
-            'productos': productos,
-            'carrito': carrito,
-            'total': total,
-            'buscar': buscar,  # Pasar el término de búsqueda al contexto
-            'resultados': resultados  # Pasar resultados al contexto
-        }
+        # Consumir la API y obtener los datos
+        url = 'https://mindicador.cl/api'
+        response = requests.get(url)
         
-        return render(request, 'indexp.html', context)
+        if response.status_code == 200:
+            data = response.json()  # Convertir la respuesta a JSON
+
+            # Calcular los totales en las diferentes divisas
+            tasas = {
+                'clp': 1,  # La tasa para CLP es 1 (CLP/CLP)
+                'usd': 1 / data['dolar']['valor'],  # Convertir de CLP a USD
+                'eur': 1 / data['euro']['valor'],  # Convertir de CLP a EUR
+                'uf': data['uf']['valor']  # La tasa para UF es directamente en CLP/UF
+            }
+
+            total_usd = total_clp * tasas['usd']
+            total_eur = total_clp * tasas['eur']
+            total_uf = total_clp / tasas['uf']
+
+            context = {
+                'productos': productos,
+                'carrito': carrito,
+                'total_clp': total_clp,
+                'total_usd': total_usd,
+                'total_eur': total_eur,
+                'total_uf': total_uf,
+                'buscar': buscar,  # Pasar el término de búsqueda al contexto
+                'resultados': resultados,  # Pasar resultados al contexto
+                'tasas': tasas  # Pasar las tasas al contexto
+            }
+
+            return render(request, 'indexp.html', context)
+        else:
+            return HttpResponse(f'Error al obtener datos de la API: {response.status_code}')
+
     except Exception as e:
         # Manejar otras excepciones si es necesario
         return HttpResponse(f"Error: {str(e)}")
+
 
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, idProducto=producto_id)

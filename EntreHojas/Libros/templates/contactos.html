@@ -67,6 +67,11 @@
     <!-- Formulario de Contacto -->
     <div class="container" style="max-width: 600px;">
       <h2>Contacta con Nosotros</h2>
+        <p style="text-align: center;">
+        <span style="display: inline-block; background-color: #f0f0f0; padding: 10px;">
+            Ingrese correo valido (ya que se le envia un correo de confirmacion)
+        </span>
+        </p>
       <form action="{% url 'contact' %}" method="post" class="was-validated" novalidate>
           {% csrf_token %}
           {% for field in form %}
